@@ -8,7 +8,7 @@ const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
-    let mut buddha = Buddha::new(-2.175, -0.9, 5000, 800.);
+    let mut buddha = Buddha::new(-2.175, -0.9, 200, 800.);
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window
@@ -23,6 +23,7 @@ fn main() {
         window.buffer.iter_mut().for_each(|pixel| *pixel = 0);
         let (width, height) = window.dimension();
         buddha.compute(&mut window.buffer, width, height);
+
         let max = *window.buffer.iter().max().unwrap();
         let sum: u32 = window.buffer.iter().copied().sum();
         let average = sum as f64 / window.buffer.len() as f64;

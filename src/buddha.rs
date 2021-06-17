@@ -1,3 +1,4 @@
+use mandelbrust::Mandel;
 use rayon::prelude::*;
 
 #[derive(Debug)]
@@ -22,13 +23,15 @@ impl Buddha {
     }
 
     pub fn compute(&self, window: &mut [u32], width: usize, height: usize) {
+        let mut mandel_window = window.to_vec();
+        let mandel: Mandel = self.into();
+        mandel.compute(&mut mandel_window, width, height);
+
         for x in 0..width {
             for y in 0..height {
-                let (iteration, z_x, z_y) = self.mandel(x, y);
-                // dbg!(iteration);
-                // window[x + y * width] = iteration;
-                // if iteration > 3 && iteration < self.iter {
-                if iteration < self.iter && (z_x * z_x + z_y * z_y) > 4. {
+                let index = x + y * width;
+                let iteration = mandel_window[index];
+                if (1..self.iter).contains(&iteration) {
                     self.bouddha(window, x, y, width, height);
                 }
             }
@@ -75,5 +78,11 @@ impl Buddha {
         }
 
         (i, z_x, z_y)
+    }
+}
+
+impl From<&Buddha> for mandelbrust::Mandel {
+    fn from(buddha: &Buddha) -> Self {
+        Self::new(buddha.pos.x, buddha.pos.y, buddha.iter, buddha.zoom)
     }
 }
