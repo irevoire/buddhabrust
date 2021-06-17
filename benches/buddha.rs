@@ -52,5 +52,5 @@ fn bench_iter(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, bench_small, bench_large, bench_iter);
+criterion_group!(benches, bench_small, bench_large, bench_normal, bench_normal_iter, bench_iter);
 criterion_main!(benches);
