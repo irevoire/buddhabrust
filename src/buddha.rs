@@ -28,9 +28,9 @@ impl Buddha {
                 // dbg!(iteration);
                 // window[x + y * width] = iteration;
                 // if iteration > 3 && iteration < self.iter {
-                if iteration < self.iter {
+                // if iteration < self.iter {
                     self.bouddha(window, x, y, width, height);
-                }
+                // }
             }
         }
     }

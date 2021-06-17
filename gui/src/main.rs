@@ -8,7 +8,7 @@ const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
-    let mut buddha = Buddha::new(-2.175, -0.9, 1000, 800.);
+    let mut buddha = Buddha::new(-2.175, -0.9, 1, 500.);
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window

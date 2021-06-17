@@ -17,15 +17,15 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 
 pub fn convert_nb_to_rbg(max: u32, window: &mut [u32]) {
     window.iter_mut().for_each(|val| {
-        if *val == max {
+        if false && *val == max {
             *val = 0x0000_0000;
         // } else if *val < 3 {
         //    *val = 0;
-        } else if true {
+        } else if false {
             *val = hue_to_rgb(
+                *val as f32,
                 1.0,
-                1.0,
-                *val as f32 / 50.,
+                *val as f32,
             );
         } else {
             *val = hue_to_rgb(

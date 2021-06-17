@@ -96,10 +96,10 @@ impl Window {
                         buddha.pos.y -= self.height as f64 * 0.25 / buddha.zoom;
                     }
                     Key::I => {
-                        buddha.iter *= 2;
+                        buddha.iter += 1;
                     }
                     Key::U => {
-                        buddha.iter /= 2;
+                        buddha.iter -= 2;
                         if buddha.iter == 0 {
                             buddha.iter = 1;
                         }
