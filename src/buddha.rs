@@ -28,7 +28,7 @@ impl Buddha {
                 // dbg!(iteration);
                 // window[x + y * width] = iteration;
                 // if iteration > 3 && iteration < self.iter {
-                if iteration < self.iter && (z_x * z_x + z_y * z_y) > 4. {
+                if iteration < self.iter {
                     self.bouddha(window, x, y, width, height);
                 }
             }
@@ -42,20 +42,17 @@ impl Buddha {
         let mut z_y = c_y;
         let mut i = 0;
 
-        if !(-2.0..2.).contains(&z_x) || !(-2.0..2.).contains(&z_y) {
-            return;
-        }
-
         while (z_x * z_x + z_y * z_y <= 4.0) && i <= self.iter {
+            let x = (z_x * self.zoom) as usize + orig_x;
+            let y = (z_y * self.zoom) as usize + orig_y;
+            if x < width && y < height {
+                window[x as usize + y as usize * width] += 1;
+            }
+
             let tmp = z_x;
             z_x = z_x * z_x - z_y * z_y + c_x;
             z_y = 2.0 * z_y * tmp + c_y;
 
-            let x = (z_x * self.zoom).round() as isize + orig_x as isize;
-            let y = (z_y * self.zoom).round() as isize + orig_y as isize;
-            if (0..width as isize).contains(&x) && (0..height as isize).contains(&y) {
-                window[x as usize + y as usize * width] += 1;
-            }
             i += 1;
         }
     }

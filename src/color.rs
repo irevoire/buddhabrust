@@ -19,13 +19,13 @@ pub fn convert_nb_to_rbg(max: u32, window: &mut [u32]) {
     window.iter_mut().for_each(|val| {
         if *val == max {
             *val = 0x0000_0000;
-        } else if *val < 3 {
-            *val = 0;
+        // } else if *val < 3 {
+        //    *val = 0;
         } else if true {
             *val = hue_to_rgb(
-                *val as f32 * 50.,
                 1.0,
-                0.8,
+                1.0,
+                *val as f32 / 50.,
             );
         } else {
             *val = hue_to_rgb(

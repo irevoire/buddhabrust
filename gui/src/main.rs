@@ -8,7 +8,7 @@ const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
-    let mut buddha = Buddha::new(-2.175, -0.9, 5000, 800.);
+    let mut buddha = Buddha::new(-2.175, -0.9, 1000, 800.);
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window
@@ -28,20 +28,9 @@ fn main() {
         let average = sum as f64 / window.buffer.len() as f64;
         // let average = max as f64 / 2.;
         let median = *window.buffer.iter().nth(window.buffer.len() / 2).unwrap();
-
-        /*
-        window.buffer.iter().fold(HashMap::new(), |hash, value| *hash.entry(value).or_insert(0) += 1);
-        */
-
-        /*
-        window
-            .buffer
-            .iter_mut()
-            .for_each(|iter| *iter = (*iter as f64 / average * max as f64) as u32);
-        */
         let max = *window.buffer.iter().max().unwrap();
         // dbg!(window.buffer.iter().enumerate().filter(|(_, i)| **i != 0).collect::<Vec<_>>());
-        color::convert_nb_to_rbg(max, &mut window.buffer);
+        color::convert_nb_to_rbg(buddha.iter, &mut window.buffer);
 
         println!(
             "buddha {:4} for {} iter",
