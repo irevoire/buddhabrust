@@ -28,7 +28,11 @@ fn main() {
         let sum: u32 = window.buffer.iter().copied().sum();
         let average = sum as f64 / window.buffer.len() as f64;
         // let average = max as f64 / 2.;
-        let median = *window.buffer.iter().nth(window.buffer.len() / 2).unwrap();
+        let mut truc = window.buffer.clone();
+        truc.sort();
+        let median = *truc.iter().nth(window.buffer.len() / 2).unwrap();
+        let last_percent = *truc.iter().nth((window.buffer.len() / 99) * 98).unwrap();
+        dbg!(last_percent);
 
         dbg!((max, sum, average, median));
         let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
@@ -36,7 +40,9 @@ fn main() {
             hash
         });
         dbg!(&distribution);
-        let max = dbg!(distribution.keys().copied().sum::<u32>() / distribution.len() as u32);
+        // let max = dbg!(distribution.keys().copied().sum::<u32>() / distribution.len() as u32);
+
+        // window.buffer.iter_mut().for_each(|val| );
 
         /*
         window
