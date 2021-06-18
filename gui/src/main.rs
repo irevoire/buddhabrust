@@ -1,14 +1,14 @@
 mod window;
 
 use buddhabrust::{color, Buddha};
-use std::{collections::HashMap, time::Instant};
+use std::{collections::{BTreeMap, HashMap}, time::Instant};
 use window::Window;
 
 const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
-    let mut buddha = Buddha::new(-2.175, -0.9, 200, 800.);
+    let mut buddha = Buddha::new(-3.1795, -3.1634, 400, 300.);
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window
@@ -30,9 +30,11 @@ fn main() {
         // let average = max as f64 / 2.;
         let median = *window.buffer.iter().nth(window.buffer.len() / 2).unwrap();
 
-        /*
-        window.buffer.iter().fold(HashMap::new(), |hash, value| *hash.entry(value).or_insert(0) += 1);
-        */
+        let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
+            *hash.entry(value).or_insert(0) += 1;
+            hash
+        });
+        dbg!(distribution);
 
         /*
         window

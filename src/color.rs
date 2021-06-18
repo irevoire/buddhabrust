@@ -23,9 +23,9 @@ pub fn convert_nb_to_rbg(max: u32, window: &mut [u32]) {
             *val = 0;
         } else if true {
             *val = hue_to_rgb(
-                *val as f32 * 50.,
-                1.0,
-                0.8,
+                0.,
+                0.,
+                *val as f32 * (360.0 / max as f32),
             );
         } else {
             *val = hue_to_rgb(
