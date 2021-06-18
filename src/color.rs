@@ -25,19 +25,23 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
 }
 
-pub fn convert_nb_to_rbg(max: u32, window: &mut [u32]) {
-    let mut truc = window.to_vec();
-    truc.sort();
-    truc.dedup();
-    dbg!(truc.iter().sum::<u32>() / truc.len() as u32);
-    dbg!(truc.get(truc.len() / 2));
-    let ratio = 1. / truc.len() as f32;
-    let map: HashMap<u32, usize> = truc.into_iter().enumerate().map(|(i, v)| (v, i + 1)).collect();
-
+pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
+    let mut distribution = window
+        .iter()
+        .copied()
+        .fold(HashMap::new(), |mut hash, value| {
+            *hash.entry(value).or_insert(0) += 1;
+            hash
+        });
+    distribution.retain(|_, v| *v > 30);
+    let max = distribution.keys().max().unwrap_or(&0);
 
     window.iter_mut().for_each(|val| {
-        let index = map[val];
-
-        *val = hue_to_rgb(220., 0.30, index as f32 * ratio);
+        if let Some(_) = distribution.get(val) {
+            *val = hue_to_rgb(220., 0.30, *val as f32 / *max as f32);
+        } else {
+            *val = u32::MAX;
+            // *val = 0;
+        }
     });
 }

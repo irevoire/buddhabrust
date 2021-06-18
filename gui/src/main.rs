@@ -14,7 +14,6 @@ fn main() {
     // init window
     let (width, height) = window.dimension();
     // buddha.compute(&mut window.buffer, width, height);
-    color::convert_nb_to_rbg(buddha.iter, &mut window.buffer);
     window.update();
 
     while window.handle_event(&mut buddha) {
@@ -52,7 +51,7 @@ fn main() {
         */
         let max = *window.buffer.iter().max().unwrap();
         // dbg!(window.buffer.iter().enumerate().filter(|(_, i)| **i != 0).collect::<Vec<_>>());
-        color::convert_nb_to_rbg(max, &mut window.buffer);
+        color::convert_nb_to_rbg(buddha.iter, &mut window.buffer);
 
         println!(
             "buddha {:4} for {} iter",
