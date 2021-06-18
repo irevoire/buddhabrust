@@ -1,13 +1,35 @@
 mod window;
 
 use buddhabrust::{color, Buddha};
-use std::{collections::{BTreeMap, HashMap}, time::Instant};
+use std::{
+    collections::{BTreeMap, HashMap},
+    time::Instant,
+};
 use window::Window;
 
 const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
+    use palette::{FromColor, Hsl, Hue, Srgb};
+    let hue_shifted = Hsl::from_color(color).shift_hue(180.0);
+    Srgb::from_color(hue_shifted).into_format().into_raw()
+    let rgb = Srgb::from_color(hsv).into_format().into_raw();
+    println!("{:?}",rgb);
+
+    /*
+    use palette::{Pixel};
+    let orangeish = Srgb::new(1.0, 0.6, 0.0).into_linear();
+
+    // Encode the result back into sRGB and create a byte array
+    let pixel: [u8; 3] = Srgb::from_linear(orangeish)
+        .into_format()
+        .into_raw();
+    dbg!(pixel);
+    */
+
+    return;
+
     let mut buddha = Buddha::new(-3.1795, -3.1634, 400, 300.);
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
@@ -30,10 +52,13 @@ fn main() {
         // let average = max as f64 / 2.;
         let median = *window.buffer.iter().nth(window.buffer.len() / 2).unwrap();
 
-        let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
-            *hash.entry(value).or_insert(0) += 1;
-            hash
-        });
+        let distribution = window
+            .buffer
+            .iter()
+            .fold(BTreeMap::new(), |mut hash, value| {
+                *hash.entry(value).or_insert(0) += 1;
+                hash
+            });
         dbg!(distribution);
 
         /*
