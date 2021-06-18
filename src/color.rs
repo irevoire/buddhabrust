@@ -34,7 +34,7 @@ pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
             hash
         });
     distribution.retain(|_, v| *v > 30);
-    let max = distribution.keys().max().unwrap_or(&0);
+    let max = distribution.keys().max().unwrap();
 
     window.iter_mut().for_each(|val| {
         if let Some(_) = distribution.get(val) {

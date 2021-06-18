@@ -50,10 +50,6 @@ impl Buddha {
         let mut z_y = c_y;
         let mut i = 0;
 
-        if !(-2.0..2.).contains(&z_x) || !(-2.0..2.).contains(&z_y) {
-            return;
-        }
-
         while i <= iter {
             let tmp = z_x;
             z_x = z_x * z_x - z_y * z_y + c_x;
