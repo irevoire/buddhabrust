@@ -1,3 +1,5 @@
+use std::sync::atomic::{AtomicU32, Ordering};
+
 use mandelbrust::Mandel;
 use rayon::prelude::*;
 
@@ -27,18 +29,21 @@ impl Buddha {
         let mandel: Mandel = self.into();
         mandel.compute(&mut mandel_window, width, height);
 
-        for x in 0..width {
+        let window: &mut [AtomicU32] = unsafe { std::mem::transmute(window) };
+
+        let range: Vec<usize> = (0..width).collect();
+        range.par_iter().for_each(|x| {
             for y in 0..height {
                 let index = x + y * width;
                 let iteration = mandel_window[index];
                 if (1..self.iter).contains(&iteration) {
-                    self.bouddha(window, x, y, width, height);
+                    self.bouddha(window, *x, y, width, height);
                 }
             }
-        }
+        });
     }
 
-    fn bouddha(&self, window: &mut [u32], orig_x: usize, orig_y: usize, width: usize, height: usize) {
+    fn bouddha(&self, window: &[AtomicU32], orig_x: usize, orig_y: usize, width: usize, height: usize) {
         let c_x = orig_x as f64 / self.zoom + self.pos.x as f64;
         let c_y = orig_y as f64 / self.zoom + self.pos.y as f64;
         let mut z_x = c_x;
@@ -57,27 +62,10 @@ impl Buddha {
             let x = (z_x * self.zoom).round() as isize + orig_x as isize;
             let y = (z_y * self.zoom).round() as isize + orig_y as isize;
             if (0..width as isize).contains(&x) && (0..height as isize).contains(&y) {
-                window[x as usize + y as usize * width] += 1;
+                window[x as usize + y as usize * width].fetch_add(1, Ordering::Relaxed);
             }
             i += 1;
         }
-    }
-
-    fn mandel(&self, orig_x: usize, orig_y: usize) -> (u32, f64, f64) {
-        let c_x = orig_x as f64 / self.zoom + self.pos.x as f64;
-        let c_y = orig_y as f64 / self.zoom + self.pos.y as f64;
-        let mut z_x = c_x;
-        let mut z_y = c_y;
-        let mut i = 0;
-
-        while (z_x * z_x + z_y * z_y <= 4.0) && i <= self.iter {
-            let tmp = z_x;
-            z_x = z_x * z_x - z_y * z_y + c_x;
-            z_y = 2.0 * z_y * tmp + c_y;
-            i += 1;
-        }
-
-        (i, z_x, z_y)
     }
 }
 
