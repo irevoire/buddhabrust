@@ -8,7 +8,12 @@ const HEIGHT: usize = 800;
 const WIDTH: usize = 800;
 
 fn main() {
-    let mut buddha = Buddha::new(-3.1795, -3.1634, 400, 300.);
+    let iter = std::env::args().nth(1);
+    let mut buddha = if let Some(iter) = iter {
+        Buddha::new(-3.1795, -3.1634, iter.parse().unwrap(), 300.)
+    } else {
+        Buddha::new(-3.1795, -3.1634, 400, 300.)
+    };
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window
