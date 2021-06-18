@@ -30,11 +30,13 @@ fn main() {
         // let average = max as f64 / 2.;
         let median = *window.buffer.iter().nth(window.buffer.len() / 2).unwrap();
 
+        dbg!((max, sum, average, median));
         let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
             *hash.entry(value).or_insert(0) += 1;
             hash
         });
-        dbg!(distribution);
+        dbg!(&distribution);
+        let max = dbg!(distribution.keys().copied().sum::<u32>() / distribution.len() as u32);
 
         /*
         window
