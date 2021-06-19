@@ -4,8 +4,8 @@ use buddhabrust::{color, Buddha};
 use std::{collections::{BTreeMap, HashMap}, time::Instant};
 use window::Window;
 
-const HEIGHT: usize = 800;
-const WIDTH: usize = 800;
+const HEIGHT: usize = 2000;
+const WIDTH: usize = 2000;
 
 fn main() {
     let iter = std::env::args().nth(1);
@@ -28,34 +28,28 @@ fn main() {
         let (width, height) = window.dimension();
         buddha.compute(&mut window.buffer, width, height);
 
+        // WINDOW LAND
         let max = *window.buffer.iter().max().unwrap();
         let sum: u32 = window.buffer.iter().copied().sum();
         let average = sum as f64 / window.buffer.len() as f64;
-        // let average = max as f64 / 2.;
-        let mut truc = window.buffer.clone();
-        truc.sort();
-        let median = *truc.iter().nth(window.buffer.len() / 2).unwrap();
-        let last_percent = *truc.iter().nth((window.buffer.len() / 99) * 98).unwrap();
-        dbg!(last_percent);
-
+        let median = max as f64 / 2.;
         dbg!((max, sum, average, median));
         let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
             *hash.entry(value).or_insert(0) += 1;
             hash
         });
-        dbg!(&distribution);
-        // let max = dbg!(distribution.keys().copied().sum::<u32>() / distribution.len() as u32);
 
-        // window.buffer.iter_mut().for_each(|val| );
-
-        /*
-        window
-            .buffer
-            .iter_mut()
-            .for_each(|iter| *iter = (*iter as f64 / average * max as f64) as u32);
-        */
+        // TRUC LAND
+        let mut truc = window.buffer.clone();
+        truc.sort();
+        let median_truc = *truc.iter().nth(window.buffer.len() / 2).unwrap();
+        let last_percent = *truc.iter().nth((window.buffer.len() / 99) * 98).unwrap();
+        dbg!(( last_percent, median));
+        let truc_distribution = truc.iter().fold(BTreeMap::new(), |mut hash, value| {
+            *hash.entry(value).or_insert(0) += 1;
+            hash
+        });
         let max = *window.buffer.iter().max().unwrap();
-        // dbg!(window.buffer.iter().enumerate().filter(|(_, i)| **i != 0).collect::<Vec<_>>());
         color::convert_nb_to_rbg(buddha.iter, &mut window.buffer);
 
         println!(

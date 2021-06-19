@@ -1,4 +1,5 @@
-use std::collections::HashMap;
+use std::{collections::{BTreeMap, HashMap}};
+
 
 pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     assert!((0.0..=360.0).contains(&hue), "bad hue: {}", hue);
@@ -26,22 +27,51 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 }
 
 pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
-    let mut distribution = window
-        .iter()
-        .copied()
-        .fold(HashMap::new(), |mut hash, value| {
-            *hash.entry(value).or_insert(0) += 1;
-            hash
-        });
-    distribution.retain(|_, v| *v > 30);
-    let max = distribution.keys().max().unwrap();
 
+    let retain_value = 30;
+    let division_value = 3;
+    
+    // DISTRIBUTION LAND
+    let mut sorted_window = window.to_vec();
+    sorted_window.sort();
+    let mut sorted_distribution = sorted_window.iter().fold(BTreeMap::new(), |mut hash, value| {
+        *hash.entry(value).or_insert(0) += 1;
+        hash
+    });
+    sorted_distribution.retain(|_, v| *v > retain_value);
+    dbg!(&sorted_distribution);
+    
+
+
+    // RATIO LAND 
+    let first_tier = (sorted_distribution.len() as f32 / division_value as f32).floor();
+    let first_ratio = 0.5 / first_tier;
+    let second_tier = sorted_distribution.len() as f32 - first_tier as f32;
+    let second_ratio = 0.5 / second_tier;
+    // println!("len: {}",sorted_distribution.len());
+    // dbg!((first_tier, first_ratio, second_tier, second_ratio));
+
+    // RATIO MAP LAND
+    let mut itter_ratio = BTreeMap::new();
+    let mut index = 0.0;
+    for (key, value) in &sorted_distribution {
+        if (index < first_tier) {
+            itter_ratio.insert(*key, (index + 1.0) * first_ratio);
+        }
+        else {
+            itter_ratio.insert(*key, (index - first_tier + 1.0) * second_ratio + 0.5);
+        }
+        index = index + 1.0;
+    }
+    dbg!(&itter_ratio);
+
+    // PIXEL LAND
     window.iter_mut().for_each(|val| {
-        if let Some(_) = distribution.get(val) {
-            *val = hue_to_rgb(220., 0.30, *val as f32 / *max as f32);
+        if let Some(_) = itter_ratio.get(val) {
+            *val = hue_to_rgb(220., 0.30, *itter_ratio.get(val).unwrap());
         } else {
-            *val = u32::MAX;
-            // *val = 0;
+        *val = u32::MAX;
+            *val = 0;
         }
     });
 }
