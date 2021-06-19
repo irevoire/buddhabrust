@@ -1,4 +1,4 @@
-use std::{collections::{BTreeMap, HashMap}};
+use std::collections::BTreeMap;
 
 
 pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
@@ -26,11 +26,11 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
 }
 
-pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
+pub fn convert_nb_to_rbg(_iter: u32, window: &mut [u32]) {
 
     let retain_value = 30;
     let division_value = 3;
-    
+
     // DISTRIBUTION LAND
     let mut sorted_window = window.to_vec();
     sorted_window.sort();
@@ -39,11 +39,8 @@ pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
         hash
     });
     sorted_distribution.retain(|_, v| *v > retain_value);
-    dbg!(&sorted_distribution);
-    
 
-
-    // RATIO LAND 
+    // RATIO LAND
     let first_tier = (sorted_distribution.len() as f32 / division_value as f32).floor();
     let first_ratio = 0.5 / first_tier;
     let second_tier = sorted_distribution.len() as f32 - first_tier as f32;
@@ -54,8 +51,8 @@ pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
     // RATIO MAP LAND
     let mut itter_ratio = BTreeMap::new();
     let mut index = 0.0;
-    for (key, value) in &sorted_distribution {
-        if (index < first_tier) {
+    for (key, _value) in &sorted_distribution {
+        if index < first_tier {
             itter_ratio.insert(*key, (index + 1.0) * first_ratio);
         }
         else {
@@ -63,15 +60,13 @@ pub fn convert_nb_to_rbg(iter: u32, window: &mut [u32]) {
         }
         index = index + 1.0;
     }
-    dbg!(&itter_ratio);
 
     // PIXEL LAND
     window.iter_mut().for_each(|val| {
         if let Some(_) = itter_ratio.get(val) {
-            *val = hue_to_rgb(220., 0.30, *itter_ratio.get(val).unwrap());
+            *val = hue_to_rgb(153., 0.50, *itter_ratio.get(val).unwrap());
         } else {
-        *val = u32::MAX;
-            *val = 0;
+            *val = u32::MAX;
         }
     });
 }
