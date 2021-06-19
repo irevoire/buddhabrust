@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use rayon::prelude::*;
 
 pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     assert!((0.0..=360.0).contains(&hue), "bad hue: {}", hue);
@@ -27,7 +28,7 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 
 pub fn scale(window: &[u32]) -> Vec<f32> {
     let retain_value = 30;
-    let division_value = 4;
+    let division_value = 2;
 
     // DISTRIBUTION LAND
     let mut sorted_window = window.to_vec();
@@ -71,4 +72,14 @@ pub fn nb_iter_to_rgb(window: &mut [u32]) {
     window.iter_mut().zip(scale).for_each(|(val, scale)| {
         *val = hue_to_rgb(153., 0.50, scale);
     });
+}
+
+pub fn merge_rgb_layers(window: &mut [u32], red: &[f32], green: &[f32], blue: &[f32]) {
+    red.par_iter()
+        .zip(green)
+        .zip(blue)
+        .map(|((r, g), b)| ((r * 255.) as u32, (g * 255.) as u32, (b * 255.) as u32))
+        .map(|(r, g, b)| ((r as u32) << 16) | ((g as u32) << 8) | (b as u32))
+        .zip(window.par_iter_mut())
+        .for_each(|(color, pixel)| *pixel = color);
 }

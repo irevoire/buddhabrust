@@ -3,12 +3,13 @@ use std::sync::atomic::{AtomicU32, Ordering};
 use mandelbrust::Mandel;
 use rayon::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Pos {
     pub x: f64,
     pub y: f64,
 }
 
+#[derive(Clone)]
 pub struct Buddha {
     pub pos: Pos,
     pub iter: u32,
@@ -55,8 +56,8 @@ impl Buddha {
             z_x = z_x * z_x - z_y * z_y + c_x;
             z_y = 2.0 * z_y * tmp + c_y;
 
-            let y = (z_x * self.zoom).round() as isize + orig_x as isize;
-            let x = (z_y * self.zoom).round() as isize + orig_y as isize;
+            let x = (z_x * self.zoom).round() as isize + orig_x as isize;
+            let y = (z_y * self.zoom).round() as isize + orig_y as isize;
             if (0..width as isize).contains(&x) && (0..height as isize).contains(&y) {
                 window[x as usize + y as usize * width].fetch_add(1, Ordering::Relaxed);
             }
