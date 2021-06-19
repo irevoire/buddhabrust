@@ -1,7 +1,7 @@
 mod window;
 
 use buddhabrust::{color, Buddha};
-use std::{collections::{BTreeMap, HashMap}, time::Instant};
+use std::time::Instant;
 use window::Window;
 
 const HEIGHT: usize = 2000;
@@ -18,7 +18,7 @@ fn main() {
 
     // init window
     let (width, height) = window.dimension();
-    // buddha.compute(&mut window.buffer, width, height);
+    buddha.compute(&mut window.buffer, width, height);
     window.update();
 
     while window.handle_event(&mut buddha) {
@@ -28,29 +28,7 @@ fn main() {
         let (width, height) = window.dimension();
         buddha.compute(&mut window.buffer, width, height);
 
-        // WINDOW LAND
-        let max = *window.buffer.iter().max().unwrap();
-        let sum: u32 = window.buffer.iter().copied().sum();
-        let average = sum as f64 / window.buffer.len() as f64;
-        let median = max as f64 / 2.;
-        dbg!((max, sum, average, median));
-        let distribution = window.buffer.iter().fold(BTreeMap::new(), |mut hash, value| {
-            *hash.entry(value).or_insert(0) += 1;
-            hash
-        });
-
-        // TRUC LAND
-        let mut truc = window.buffer.clone();
-        truc.sort();
-        let median_truc = *truc.iter().nth(window.buffer.len() / 2).unwrap();
-        let last_percent = *truc.iter().nth((window.buffer.len() / 99) * 98).unwrap();
-        dbg!(( last_percent, median));
-        let truc_distribution = truc.iter().fold(BTreeMap::new(), |mut hash, value| {
-            *hash.entry(value).or_insert(0) += 1;
-            hash
-        });
-        let max = *window.buffer.iter().max().unwrap();
-        color::convert_nb_to_rbg(buddha.iter, &mut window.buffer);
+        color::nb_iter_to_rgb(&mut window.buffer);
 
         println!(
             "buddha {:4} for {} iter",

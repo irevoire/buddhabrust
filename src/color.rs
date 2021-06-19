@@ -1,6 +1,5 @@
 use std::collections::BTreeMap;
 
-
 pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     assert!((0.0..=360.0).contains(&hue), "bad hue: {}", hue);
     assert!(
@@ -26,18 +25,19 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
 }
 
-pub fn convert_nb_to_rbg(_iter: u32, window: &mut [u32]) {
-
+pub fn scale(window: &[u32]) -> Vec<f32> {
     let retain_value = 30;
-    let division_value = 3;
+    let division_value = 4;
 
     // DISTRIBUTION LAND
     let mut sorted_window = window.to_vec();
     sorted_window.sort();
-    let mut sorted_distribution = sorted_window.iter().fold(BTreeMap::new(), |mut hash, value| {
-        *hash.entry(value).or_insert(0) += 1;
-        hash
-    });
+    let mut sorted_distribution = sorted_window
+        .iter()
+        .fold(BTreeMap::new(), |mut hash, value| {
+            *hash.entry(value).or_insert(0) += 1;
+            hash
+        });
     sorted_distribution.retain(|_, v| *v > retain_value);
 
     // RATIO LAND
@@ -45,28 +45,30 @@ pub fn convert_nb_to_rbg(_iter: u32, window: &mut [u32]) {
     let first_ratio = 0.5 / first_tier;
     let second_tier = sorted_distribution.len() as f32 - first_tier as f32;
     let second_ratio = 0.5 / second_tier;
-    // println!("len: {}",sorted_distribution.len());
-    // dbg!((first_tier, first_ratio, second_tier, second_ratio));
 
-    // RATIO MAP LAND
-    let mut itter_ratio = BTreeMap::new();
-    let mut index = 0.0;
-    for (key, _value) in &sorted_distribution {
-        if index < first_tier {
-            itter_ratio.insert(*key, (index + 1.0) * first_ratio);
-        }
-        else {
-            itter_ratio.insert(*key, (index - first_tier + 1.0) * second_ratio + 0.5);
-        }
-        index = index + 1.0;
-    }
+    let itter_ratio: BTreeMap<u32, f32> = sorted_distribution
+        .iter()
+        .enumerate()
+        .map(|(index, (&key, _))| {
+            let index = index as f32;
+            if index < first_tier {
+                (*key, (index + 1.0) * first_ratio)
+            } else {
+                (*key, (index - first_tier + 1.0) * second_ratio + 0.5)
+            }
+        })
+        .collect();
 
-    // PIXEL LAND
-    window.iter_mut().for_each(|val| {
-        if let Some(_) = itter_ratio.get(val) {
-            *val = hue_to_rgb(153., 0.50, *itter_ratio.get(val).unwrap());
-        } else {
-            *val = u32::MAX;
-        }
+    window
+        .iter()
+        .map(|val| *itter_ratio.get(val).unwrap_or(&1.))
+        .collect()
+}
+
+pub fn nb_iter_to_rgb(window: &mut [u32]) {
+    let scale = scale(window);
+
+    window.iter_mut().zip(scale).for_each(|(val, scale)| {
+        *val = hue_to_rgb(153., 0.50, scale);
     });
 }
