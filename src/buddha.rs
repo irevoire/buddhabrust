@@ -34,9 +34,9 @@ impl Buddha {
             iter,
             zoom,
             colorization: Channel {
-                r: 50,
-                g: 50,
-                b: 50,
+                r: 50000,
+                g: 5000,
+                b: 500,
             },
             ratio: 2,
             retain: 10,

@@ -1,5 +1,5 @@
-use std::collections::BTreeMap;
 use rayon::prelude::*;
+use std::collections::BTreeMap;
 
 pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
     assert!((0.0..=360.0).contains(&hue), "bad hue: {}", hue);
@@ -27,12 +27,17 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 }
 
 pub fn scale(window: &[u32]) -> Vec<f32> {
-    let retain_value = 10;
-    let division_value = 2;
+    let division_value = 1;
 
     // DISTRIBUTION LAND
     let mut sorted_window = window.to_vec();
     sorted_window.sort();
+    let retain_value = sorted_window
+        .windows(2)
+        .map(|window| (window[1] as f32 + 1.) / (window[0] as f32 + 1.))
+        .position(|slope| slope > 2.)
+        .unwrap_or(sorted_window.len() - 1);
+    let retain_value = sorted_window[retain_value];
     let mut sorted_distribution = sorted_window
         .iter()
         .fold(BTreeMap::new(), |mut hash, value| {
