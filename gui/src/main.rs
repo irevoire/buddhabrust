@@ -28,23 +28,24 @@ fn main() {
         let (width, height) = window.dimension();
         let mut red_channel = window.buffer.clone();
         let mut red_buddha = buddha.clone();
-        red_buddha.iter = buddha.iter * 100;
+        red_buddha.iter = buddha.colorization.r;
         red_buddha.compute(&mut red_channel, width, height);
         let red_channel = color::scale(&red_channel);
 
         let mut green_channel = window.buffer.clone();
         let mut green_buddha = buddha.clone();
-        green_buddha.iter = buddha.iter * 10;
+        green_buddha.iter = buddha.colorization.g;
         green_buddha.compute(&mut green_channel, width, height);
         let green_channel = color::scale(&green_channel);
 
         let mut blue_channel = window.buffer.clone();
         let mut blue_buddha = buddha.clone();
-        blue_buddha.iter = buddha.iter;
+        blue_buddha.iter = buddha.colorization.b;
         blue_buddha.compute(&mut blue_channel, width, height);
         let blue_channel = color::scale(&blue_channel);
 
-        println!("buddha {:?} for {} iter", now.elapsed(), buddha.iter);
+        // println!("buddha {:?} for {} iter", now.elapsed(), buddha.iter);
+        println!("buddha {:?} for {:?} iter", now.elapsed(), buddha.colorization);
 
         let now = Instant::now();
         color::merge_rgb_layers(

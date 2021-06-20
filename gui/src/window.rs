@@ -112,6 +112,18 @@ impl Window {
                         }
                         res = Some(true);
                     }
+                    Key::R => {
+                        buddha.colorization.r += 10;
+                        res = Some(true);
+                    }
+                    Key::B => {
+                        buddha.colorization.b += 10;
+                        res = Some(true);
+                    }
+                    Key::G => {
+                        buddha.colorization.g += 10;
+                        res = Some(true);
+                    }
                     _ => (),
                 }
             }

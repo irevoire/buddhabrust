@@ -9,11 +9,22 @@ pub struct Pos {
     pub y: f64,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
+pub struct Channel {
+    pub r: u32,
+    pub g: u32,
+    pub b: u32,
+}
+
+#[derive(Debug, Clone)]
 pub struct Buddha {
     pub pos: Pos,
     pub iter: u32,
     pub zoom: f64,
+
+    pub colorization: Channel,
+    pub ratio: u32,
+    pub retain: u32,
 }
 
 impl Buddha {
@@ -22,6 +33,13 @@ impl Buddha {
             pos: Pos { x, y },
             iter,
             zoom,
+            colorization: Channel {
+                r: 50,
+                g: 50,
+                b: 50,
+            },
+            ratio: 2,
+            retain: 10,
         }
     }
 
