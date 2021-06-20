@@ -27,7 +27,7 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 }
 
 pub fn scale(window: &[u32]) -> Vec<f32> {
-    let retain_value = 30;
+    let retain_value = 10;
     let division_value = 2;
 
     // DISTRIBUTION LAND
@@ -79,7 +79,7 @@ pub fn merge_rgb_layers(window: &mut [u32], red: &[f32], green: &[f32], blue: &[
         .zip(green)
         .zip(blue)
         .map(|((r, g), b)| ((r * 255.) as u32, (g * 255.) as u32, (b * 255.) as u32))
-        .map(|(r, g, b)| ((r as u32) << 16) | ((g as u32) << 8) | (b as u32))
+        .map(|(r, g, b)| (0xff << 24) | ((r as u32) << 16) | ((g as u32) << 8) | (b as u32))
         .zip(window.par_iter_mut())
         .for_each(|(color, pixel)| *pixel = color);
 }

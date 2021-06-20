@@ -75,40 +75,45 @@ impl Window {
                     Key::Escape => return Some(false),
                     Key::W | Key::Z | Key::Up => {
                         buddha.pos.y -= 100.0 / buddha.zoom;
+                        res = Some(true);
                     }
                     Key::S | Key::Down => {
                         buddha.pos.y += 100.0 / buddha.zoom;
+                        res = Some(true);
                     }
                     Key::A | Key::Q | Key::Left => {
                         buddha.pos.x -= 100.0 / buddha.zoom;
+                        res = Some(true);
                     }
                     Key::D | Key::Right => {
                         buddha.pos.x += 100.0 / buddha.zoom;
+                        res = Some(true);
                     }
                     Key::Space => {
                         buddha.pos.x += self.width as f64 * 0.25 / buddha.zoom;
                         buddha.pos.y += self.height as f64 * 0.25 / buddha.zoom;
                         buddha.zoom *= 2.0;
+                        res = Some(true);
                     }
                     Key::X => {
                         buddha.zoom /= 2.0;
                         buddha.pos.x -= self.width as f64 * 0.25 / buddha.zoom;
                         buddha.pos.y -= self.height as f64 * 0.25 / buddha.zoom;
+                        res = Some(true);
                     }
                     Key::I => {
                         buddha.iter *= 2;
+                        res = Some(true);
                     }
                     Key::U => {
                         buddha.iter /= 2;
                         if buddha.iter == 0 {
                             buddha.iter = 1;
                         }
+                        res = Some(true);
                     }
                     _ => (),
                 }
-            }
-            if !keys.is_empty() {
-                res = Some(true);
             }
         };
 
