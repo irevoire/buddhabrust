@@ -12,13 +12,13 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
         _ => return 0,
     };
     let (r, g, b) = ((r + m) * 255.0, (g + m) * 255.0, (b + m) * 255.0);
-    ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
+    (0xff << 24) | ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
 }
 
 pub fn convert_nb_to_rbg(max: u32, window: &mut [u32]) {
     window.iter_mut().for_each(|val| {
-        if false && *val == max {
-            *val = 0x0000_0000;
+        if *val >= max {
+            *val = 0xff00_0000;
         // } else if *val < 3 {
         //    *val = 0;
         } else if false {
