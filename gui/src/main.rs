@@ -17,8 +17,6 @@ fn main() {
     let mut window = Window::new(WIDTH, HEIGHT).unwrap();
 
     // init window
-    let (width, height) = window.dimension();
-    // buddha.compute(&mut window.buffer, width, height);
     window.update();
 
     while window.handle_event(&mut buddha) {
@@ -56,19 +54,6 @@ fn main() {
         );
         // color::nb_iter_to_rgb(&mut window.buffer);
         println!("Colorized the buddhabrot in {:?}", now.elapsed());
-
-        use std::io::prelude::*;
-        let mut file = std::fs::File::create("truc.bmp").unwrap();
-        let mut bmp_writer = image::bmp::BmpEncoder::new(&mut file);
-        let slice: &[u8] = unsafe {
-            std::slice::from_raw_parts(window.buffer.as_ptr() as *const u8, window.buffer.len() * std::mem::size_of::<u32>())
-        };
-        bmp_writer.encode(slice, width as u32, height as u32, image::ColorType::Rgba8);
-
-        return;
-
-
-        let now = Instant::now();
 
         window.update();
 

@@ -1,0 +1,10 @@
+[package]
+name = "cli"
+version = "0.1.0"
+authors = ["Thomas Campistron <irevoire@hotmail.fr>", "Charlotte Vermandel"]
+edition = "2018"
+
+[dependencies]
+buddhabrust = { path = ".." }
+structopt = "0.3.20"
+image = "0.23.14"
