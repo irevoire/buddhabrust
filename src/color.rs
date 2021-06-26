@@ -27,7 +27,7 @@ pub fn hue_to_rgb(hue: f32, saturation: f32, value: f32) -> u32 {
 }
 
 pub fn scale(window: &[u32]) -> Vec<f32> {
-    let division_value = 1;
+    let division_value = 3;
 
     // DISTRIBUTION LAND
     let mut sorted_window = window.to_vec();
